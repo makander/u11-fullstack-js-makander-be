@@ -1,12 +1,18 @@
-//const Users = require('../models/user');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   index(req, res) {
     res.send({ greeting: 'suuup!' });
   },
 
-  create(req, res) {
-    res.send({ User: 'Theres gonna be a user here, yeah, thats right' });
+  register(req, res) {
+    const userProps = req.body;
+    console.log(userProps);
+
+    User.create(userProps)
+      .then((User) => res.send(User))
+      .catch(next);
   },
 
   delete(req, res) {
@@ -14,7 +20,11 @@ module.exports = {
   },
 
   login(req, res) {
-    res.send({ User: 'You logged in' });
+    jwt.sign();
+  },
+
+  logout(req, res) {
+    res.send({ User: 'You logged out' });
   },
 
   edit(req, res) {},

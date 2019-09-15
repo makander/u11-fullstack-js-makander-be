@@ -1,15 +1,11 @@
 const UserController = require('../controller/users_controller');
 
 module.exports = (app) => {
-  app.get('/login', UserController.login);
+  app.post('/login', UserController.login);
 
-  //app.post('logout', UserController.logout);
+  app.post('/logout', UserController.logout);
 
-  //app.post('/register', UserController.logout);
-
-  //app.get('/dashboard', UserController.dashboard);
-
-  //app.get('/admin', UserController.admin);
+  app.post('/register', UserController.register);
 
   app.get('/', UserController.index);
 
