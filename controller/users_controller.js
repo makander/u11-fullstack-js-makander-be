@@ -32,7 +32,15 @@ module.exports = {
         .isPasswordValid(password)
         .then((match) => {
           if (match) {
-            res.status(200).send(user);
+            const payload = { user: user.email };
+            const options = {
+              expiresIn: '2d',
+              issuer: 'CoffeePot enterprises',
+            };
+            const secret = 'cofvefe';
+            const token = jwt.sign(payload, secret, options);
+
+            res.status(200).send(token);
           } else {
             res.status(401).send('auth error');
           }
