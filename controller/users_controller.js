@@ -24,6 +24,10 @@ module.exports = {
       return res.status(404).send('username or password missing');
     }
 
+    if (req.body === null || req.body === undefined) {
+      return res.status(404).send('username or password missing');
+    }
+
     User.findOne({ email }, (err, user) => {
       if (err) {
         res.status(404).send(err);
@@ -57,7 +61,12 @@ module.exports = {
 
   edit(req, res) {},
 
-  dashboard(req, res) {},
+  dashboard(req, res) {
+    const payload = req.decoded;
+    console.log(payload);
+
+    res.send('Welcome young paddawan');
+  },
 
   admin(req, res) {},
 };
