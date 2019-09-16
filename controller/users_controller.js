@@ -18,7 +18,29 @@ module.exports = {
   },
 
   login(req, res) {
-    jwt.sign();
+    const { email, password } = req.body;
+
+    if (!email && !password) {
+      return res.status(404).send('username or password missing');
+    }
+
+    User.findOne({ email }, (err, user) => {
+      if (err) {
+        res.status(404).send(err);
+      }
+      user
+        .isPasswordValid(password)
+        .then((match) => {
+          if (match) {
+            res.status(200).send(user);
+          } else {
+            res.status(401).send('auth error');
+          }
+        })
+        .catch((err) => {
+          res.status(500).send(err);
+        });
+    });
   },
 
   logout(req, res) {
