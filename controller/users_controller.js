@@ -10,9 +10,7 @@ module.exports = {
     const userProps = req.body;
     console.log(userProps);
 
-    User.create(userProps)
-      .then((User) => res.send(User))
-      .catch(next);
+    User.create(userProps).then((User) => res.send(User));
   },
 
   delete(req, res) {
