@@ -1,6 +1,5 @@
 const UserController = require('../controller/users_controller');
 const utils = require('../utils/utils');
-
 module.exports = (app) => {
   app.post('/login', UserController.login);
 
@@ -11,9 +10,8 @@ module.exports = (app) => {
   app.get('/', UserController.index);
 
   app.get('/dashboard', utils.validateToken, UserController.dashboard);
-  /*     /login
-/logout
-/register
-/admin/login
-/admin/dashboard */
+
+  app.post('/admin/login');
+
+  app.get('/admin/dashboard');
 };
