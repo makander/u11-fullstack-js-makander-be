@@ -1,19 +1,24 @@
 const express = require('express');
-const cors = require('cors');
-const routes = require('./routes/routes');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const app = express();
+const cors = require('cors');
+const routes = require('./routes/api/users');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/u11', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  //'mongodb+srv://CoffeeUser:tjzuhdVsAkD5E59ywBaK@cluster0-mbz2k.mongodb.net/test?retryWrites=true&w=majority',
+  'mongodb://localhost/u11',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-routes(app);
+app.use(cookieParser());
+app.use('/api', routes);
 
 module.exports = app;
