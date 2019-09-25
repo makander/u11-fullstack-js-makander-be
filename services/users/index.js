@@ -1,20 +1,23 @@
 const User = require('../../models/user');
+const jwt = require('jsonwebtoken');
 
-const register = (req, res) => {
+const register = async (req, res) => {
   const userProps = req.body;
-  console.log(userProps);
-
-  User.create(userProps).then((User) => res.send(User));
+  try {
+    await User.create(userProps);
+    res.status(200).send('user created');
+  } catch (e) {
+    console.log(e);
+    res.send(e);
+  }
 };
 
-/*   delete = (req, res) => {
-    res.send({ User: 'yeah, we delete yo ass' });
-  } */
+const deleteUser = () => {};
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   console.log(req.body);
-  if (!email && !password) {
+  if (!email || !password) {
     return res.status(404).send('username or password missing');
   }
 
@@ -22,54 +25,57 @@ const login = (req, res) => {
     return res.status(404).send('username or password missing');
   }
 
-  User.findOne({ email }, (err, user) => {
-    if (err) {
-      res.status(404).send(err);
-    }
-    User.isPasswordValid(password)
-      .then((match) => {
-        if (match) {
-          const payload = { user: user.email };
-          const options = {
-            expiresIn: '2d',
-            issuer: 'CoffeePot enterprises',
-          };
-          const secret = 'cofvefe';
-          const token = jwt.sign(payload, secret, options);
+  try {
+    user = await User.findOne({ email });
+    validPassword = await user.isPasswordValid(password);
 
-          res.cookie('token', token, { maxAge: jwtExpirySeconds * 1000 });
-          res.end();
+    if (validPassword) {
+      const payload = { email: user.email, firstName: user.firstName };
+      const options = {
+        expiresIn: '12h',
+        issuer: 'CoffeePot enterprises',
+      };
+      const secret = 'cofvefe';
+      const token = jwt.sign(payload, secret, options);
 
-          res.status(200).send(token);
-        } else {
-          res.status(401).send('auth error');
-        }
-      })
-      .catch((err) => {
-        res.status(500).send(err);
+      res.cookie('token', token, {
+        maxAge: new Date(Date.now() + 43200000),
+        httpOnly: true,
       });
-  });
+
+      res.status(200).send(token);
+    } else {
+      res.status(401).send('auth error');
+    }
+  } catch (e) {
+    res.status(500).send(e);
+  }
 };
 
-logout = (req, res) => {
+const logout = (req, res) => {
   res.send({ User: 'You logged out' });
 };
 
-//edit(req, res) {}
-
-dashboard = (req, res) => {
-  console.log(req.cookies.coffeePot);
-  //console.log(req);
-  //console.log(req.body);
-  const payload = req.decoded;
-  //console.log(payload);
-
-  res.send('Welcome young paddawan');
+const dashboard = (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401);
+  }
+  secret = 'cofvefe';
+  let payload = jwt.verify(token, secret);
+  console.log(payload);
+  res.redirect('http://192.168.1.166:5000/api/coffee');
+  //res.send(`Welcome ${payload.firstName}`);
 };
 
-//admin(req, res) {}
+const test = (req, res) => {
+  res.send({ message: 'Testing User Api' });
+};
 
 module.exports = {
   register: register,
   login: login,
+  delete: deleteUser,
+  dashboard: dashboard,
+  test: test,
 };
