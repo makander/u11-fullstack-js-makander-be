@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const CoffeePotSchema = new Schema({
   title: String,
-  content: String,
+  description: String,
   ip: String,
 });
 
