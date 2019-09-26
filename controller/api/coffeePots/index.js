@@ -6,13 +6,17 @@ router.post('/create', (req, res) => {
   coffeePotService.create(req, res);
 });
 
-router.put('/edit', (req, res) => {
+router.put('/edit/:id', (req, res) => {
   coffeePotService.edit(req, res);
 });
 
-router.get('/', coffeePotService.read);
+router.get('/', coffeePotService.get);
 
-router.delete('/delete', (req, res) => {
+router.get('/:id', coffeePotService.getOne);
+
+router.get('/test', coffeePotService.test);
+
+router.delete('/delete/:id', (req, res) => {
   coffeePotService.delete(req, res);
 });
 
