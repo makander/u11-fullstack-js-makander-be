@@ -12,11 +12,21 @@ const register = async (req, res) => {
   }
 };
 
-const deleteUser = () => {};
+const deleteUser = async (req, res) => {
+  try {
+    const Id = req.params.id;
+    const props = req.body;
+    console.log(Id, props);
+    await User.findByIdAndDelete(Id);
+    res.status(200).send('deleted');
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
+
   if (!email || !password) {
     return res.status(404).send('username or password missing');
   }
@@ -30,7 +40,11 @@ const login = async (req, res) => {
     validPassword = await user.isPasswordValid(password);
 
     if (validPassword) {
-      const payload = { email: user.email, firstName: user.firstName };
+      const payload = {
+        email: user.email,
+        firstName: user.firstName,
+        isAdmin: user.isAdmin,
+      };
       const options = {
         expiresIn: '12h',
         issuer: 'CoffeePot enterprises',
@@ -38,12 +52,21 @@ const login = async (req, res) => {
       const secret = 'cofvefe';
       const token = jwt.sign(payload, secret, options);
 
-      res.cookie('token', token, {
+      res.cookie('coffeeToken', token, {
         maxAge: new Date(Date.now() + 43200000),
         httpOnly: true,
       });
 
-      res.status(200).send(token);
+      res.send({
+        user: {
+          id: user._id,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          firstname: user.firstName,
+          lastName: user.lastName,
+        },
+        user,
+      });
     } else {
       res.status(401).send('auth error');
     }
@@ -52,30 +75,52 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (req, res) => {
-  res.send({ User: 'You logged out' });
-};
+const getMany = async (req, res) => {
+  try {
+    const result = await User.find({});
 
-const dashboard = (req, res) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401);
+    res.send({ result });
+  } catch (e) {
+    console.log(e);
   }
-  secret = 'cofvefe';
-  let payload = jwt.verify(token, secret);
-  console.log(payload);
-  res.redirect('http://192.168.1.166:5000/api/coffee');
-  //res.send(`Welcome ${payload.firstName}`);
 };
 
-const test = (req, res) => {
-  res.send({ message: 'Testing User Api' });
+const getOne = async (req, res) => {
+  try {
+    const userProps = req.body;
+
+    const result = await User.findOne(userProps);
+
+    res.send({ result });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const edit = async (req, res) => {
+  try {
+    const token = req.cookies.coffeeToken;
+    if (!token) {
+      return res.status(401);
+    }
+    secret = 'cofvefe';
+    jwt.verify(token, secret);
+
+    const Id = req.params.id;
+    const userProps = req.body;
+    result = await User.findByIdAndUpdate(Id, userProps);
+    user.save();
+    res.status(200).send({ updated: result });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 module.exports = {
-  register: register,
-  login: login,
-  delete: deleteUser,
-  dashboard: dashboard,
-  test: test,
+  register,
+  login,
+  deleteUser,
+  edit,
+  getMany,
+  getOne,
 };
