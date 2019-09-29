@@ -20,7 +20,7 @@ mongoose
   .catch(err);
 mongoose.connection.on('error', console.error(err));
 
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['https://coffeepot-fe.herokuapp.com/'];
 
 app.use(
   cors({
