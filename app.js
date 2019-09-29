@@ -19,8 +19,8 @@ mongoose
   )
   .catch((error) => console.log(error));
 
-const allowedOrigins = ['https://coffeepot-fe.herokuapp.com/'];
-
+//const allowedOrigins = ['https://coffeepot-fe.herokuapp.com/'];
+const allowedOrigins = ['http://localhost:3000'];
 app.use(
   cors({
     origin: function(origin, callback) {

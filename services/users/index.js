@@ -4,11 +4,13 @@ const jwt = require('jsonwebtoken');
 const register = async (req, res) => {
   const userProps = req.body;
   try {
-    await User.create(userProps);
-    res.status(200).send('user created');
+    await User.create(userProps).then(res.status(200).send('user created'));
   } catch (e) {
-    console.log(e);
-    res.send(e);
+    if (e) {
+      for (field in e.errors) {
+        console.log(e);
+      }
+    }
   }
 };
 
@@ -99,20 +101,16 @@ const getOne = async (req, res) => {
 
 const edit = async (req, res) => {
   try {
-    const token = req.cookies.coffeeToken;
-    if (!token) {
-      return res.status(401);
-    }
-    secret = 'cofvefe';
-    jwt.verify(token, secret);
-
     const Id = req.params.id;
     const userProps = req.body;
-    result = await User.findByIdAndUpdate(Id, userProps);
-    user.save();
+    result = await User.findOneAndUpdate(Id, userProps);
     res.status(200).send({ updated: result });
   } catch (e) {
-    console.log(e);
+    if (e) {
+      for (field in e.errors) {
+        console.log(e);
+      }
+    }
   }
 };
 

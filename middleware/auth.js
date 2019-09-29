@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
     next();
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
-      return res.status(401).end();
+      res.status(401).end();
     }
     return res.status(400).end();
   }
