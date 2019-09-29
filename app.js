@@ -8,14 +8,17 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes');
 
-mongoose.connect(
-  `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}${process.env.MONGO_CONN_URL}`,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  }
-);
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}${process.env.MONGO_CONN_URL}`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }
+  )
+  .catch(err);
+mongoose.connection.on('error', console.error(err));
 
 const allowedOrigins = ['http://localhost:3000'];
 
