@@ -17,8 +17,7 @@ mongoose
       useFindAndModify: false,
     }
   )
-  .catch(err);
-mongoose.connection.on('error', console.error(err));
+  .catch('error', console.error(err));
 
 const allowedOrigins = ['https://coffeepot-fe.herokuapp.com/'];
 
