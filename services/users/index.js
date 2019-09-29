@@ -49,7 +49,7 @@ const login = async (req, res) => {
         expiresIn: '12h',
         issuer: 'CoffeePot enterprises',
       };
-      const secret = 'cofvefe';
+      const secret = process.env.JWT_SECRET;
       const token = jwt.sign(payload, secret, options);
 
       res.cookie('coffeeToken', token, {
