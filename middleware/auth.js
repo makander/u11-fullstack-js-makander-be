@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
     return res.status(401);
   }
   try {
-    secret = 'cofvefe';
+    secret = process.env.JWT_SECRET;
     let payload = jwt.verify(token, secret);
     next();
   } catch (e) {
