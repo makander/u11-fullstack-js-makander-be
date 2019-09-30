@@ -20,7 +20,7 @@ mongoose
   .catch((error) => console.log(error));
 mongoose.set('useCreateIndex', true);
 const allowedOrigins = [
-  'https://coffeepot-fe.herokuapp.com/',
+  'https://coffeepot-fe.herokuapp.com',
   'http://localhost:3000',
 ];
 
