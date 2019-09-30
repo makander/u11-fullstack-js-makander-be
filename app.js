@@ -20,9 +20,10 @@ mongoose
   .catch((error) => console.log(error));
 mongoose.set('useCreateIndex', true);
 const allowedOrigins = [
+  'https://coffeepot-fe.herokuapp.com/',
   'http://localhost:3000',
-  ' https://coffeepot-fe.herokuapp.com',
 ];
+
 app.use(
   cors({
     origin: function(origin, callback) {
