@@ -1,30 +1,46 @@
+require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const app = express();
 
-const routes = require('./routes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const routes = require('./routes');
 
-mongoose.connect(
-  'mongodb+srv://CoffeeUser:tjzuhdVsAkD5E59ywBaK@cluster0-mbz2k.mongodb.net/test?retryWrites=true&w=majority',
-  
-  //'mongodb://localhost/u11',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PW}${process.env.MONGO_CONN_URL}`,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }
+  )
+  .catch((error) => console.log(error));
+mongoose.set('useCreateIndex', true);
+const allowedOrigins = [
+  'https://coffeepot-fe.herokuapp.com',
+  'http://localhost:3000',
+];
+
+app.use(
+  cors({
+    origin: function(origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let msg =
+          'The CORS policy for this site does not ' +
+          'allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+
+    credentials: true,
+  })
 );
-
-/* corsOptions = {
-  origin: 'http://localhost',
-}; */
-
-app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/api', routes);
-
+app.use('/', routes);
 module.exports = app;

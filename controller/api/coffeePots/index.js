@@ -1,23 +1,18 @@
 const express = require('express');
 let router = express.Router();
 const coffeePotService = require('../../../services/coffeePots');
+const auth = require('../../../middleware/auth');
 
-router.post('/create', (req, res) => {
-  coffeePotService.create(req, res);
-});
-
-router.put('/edit/:id', (req, res) => {
+router.put('/edit/:id', auth, (req, res) => {
   coffeePotService.edit(req, res);
 });
 
-router.get('/', coffeePotService.get);
+router.get('/', coffeePotService.getCoffeePots);
 
-router.get('/:id', coffeePotService.getOne);
+router.get('/:id', auth, coffeePotService.getOneCoffeePot);
 
-router.get('/test', coffeePotService.test);
-
-router.delete('/delete/:id', (req, res) => {
-  coffeePotService.delete(req, res);
+router.delete('/delete/:id', auth, (req, res) => {
+  coffeePotService.deletePot(req, res);
 });
 
 module.exports = router;
