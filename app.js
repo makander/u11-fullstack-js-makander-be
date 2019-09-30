@@ -42,6 +42,5 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use('/api', routes);
-
+app.use('/', routes);
 module.exports = app;

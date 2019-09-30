@@ -3,8 +3,10 @@ const express = require('express'),
 
 const coffeeController = require('../controller/api/coffeePots');
 const usersController = require('../controller/api/users');
+const homeController = require('../controller/home');
 
-router.use('/coffeepots', coffeeController);
-router.use('/users', usersController);
+router.use('/api/coffeepots', coffeeController);
+router.use('/api/users', usersController);
+router.use('/', homeController.index);
 
 module.exports = router;
